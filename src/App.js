@@ -1,23 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 function App() {
+  const [city, setCity] = useState("");
+  const [showInfo, setShowInfo] = useState([]);
+
+  useEffect(() => {
+    weatherInfo();
+  }, []);
+
+  const handleclick = () => {
+    const newInfo = [...showInfo, city];
+    setShowInfo(newInfo);
+    console.log(setShowInfo)
+    setCity("");
+  };
+
+  const inputChanging = (e) => {
+    setCity(e.target.value);
+  };
+
+  const weatherInfo = async () => {
+    const response = await axios.get(
+      `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=04f917a77433e8f5005224d17da7dcda`
+    );
+    setShowInfo(response.data.data);
+  };
+  // console.log(weatherInfo);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <input type="text" onChange={inputChanging} value={city} />
+      <button onClick={handleclick}>city</button>
+      <div>{showInfo}</div>
     </div>
   );
 }
